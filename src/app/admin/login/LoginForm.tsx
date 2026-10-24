@@ -24,13 +24,24 @@ export function LoginForm() {
     setState("sending");
     const { error } = await createBrowserSupabase().auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${location.origin}/auth/callback?next=/admin` },
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback?next=/admin`,
+        // Only existing accounts get a link; this form never creates one.
+        shouldCreateUser: false,
+      },
     });
-    setState(error ? "failed" : "sent");
+    // An unknown email is refused with "signups not allowed". Show the same message as a
+    // success so the form doesn't reveal which emails have accounts.
+    const unknownEmail = error && (error.status === 422 || /signup/i.test(error.message));
+    setState(error && !unknownEmail ? "failed" : "sent");
   }
 
   if (state === "sent") {
-    return <p className="rounded-lg border border-border bg-surface p-4">Check {email} for a sign-in link.</p>;
+    return (
+      <p className="rounded-lg border border-border bg-surface p-4">
+        If {email} is an admin account, a sign-in link is on its way.
+      </p>
+    );
   }
 
   return (
