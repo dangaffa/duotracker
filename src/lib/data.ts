@@ -6,6 +6,11 @@ import type { App, StatusHistoryEntry } from "./types";
 
 export const APPS_TAG = "apps";
 
+// Re-check the database every minute. Admin actions clear the cache instantly, but only on
+// the server they run on: a change made from localhost (or straight in Supabase) would
+// otherwise leave the live site showing old data for up to an hour.
+const PUBLIC_DATA = { stale: 60, revalidate: 60, expire: 3600 };
+
 const APP_COLUMNS =
   "id, slug, name, developer, app_store_url, icon_url, status, notes, app_version, verified_at, updated_at, app_store_id, store_version, store_version_date, store_checked_at";
 
@@ -50,7 +55,7 @@ const DEMO_APPS: App[] = [
 export async function getApps(): Promise<App[]> {
   "use cache";
   cacheTag(APPS_TAG);
-  cacheLife("hours");
+  cacheLife(PUBLIC_DATA);
 
   if (!isSupabaseConfigured) return DEMO_APPS;
 
@@ -65,7 +70,7 @@ export async function getApps(): Promise<App[]> {
 export async function getApp(slug: string): Promise<{ app: App; history: StatusHistoryEntry[] } | null> {
   "use cache";
   cacheTag(APPS_TAG, `app:${slug}`);
-  cacheLife("hours");
+  cacheLife(PUBLIC_DATA);
 
   if (!isSupabaseConfigured) {
     const app = DEMO_APPS.find((a) => a.slug === slug);
