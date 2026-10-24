@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #eef0f4;
+  --border: #dde1e8;
+  --foreground: #14171c;
+  --muted: #5d6573;
+  --accent: #3f5bd8;
+  --accent-fg: #ffffff;
+
+  --status-duo: #1f9d55;
+  --status-duo-issues: #7a9a14;
+  --status-ios27: #d48a0b;
+  --status-unoptimized: #d1453b;
+
+  /* Device drawings */
+  --ink: #1d1f23;
+  --paper: #ffffff;
+  --wash: #efeee9;
+  --wash-2: #d9d7cf;
+  --bezel: #2b2e34;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d0f13;
+    --surface: #161a20;
+    --surface-2: #1e232b;
+    --border: #2a303a;
+    --foreground: #e8ebf0;
+    --muted: #9099a8;
+    --accent: #7d93ff;
+    --accent-fg: #0d0f13;
+
+    --status-duo: #3ccf7d;
+    --status-duo-issues: #b2d235;
+    --status-ios27: #f2ae3d;
+    --status-unoptimized: #f06a5f;
+
+    --ink: #e4e6ea;
+    --paper: #171a1f;
+    --wash: #23272e;
+    --wash-2: #3a404a;
+    --bezel: #3b414b;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.field {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+}
+.field:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--surface-2);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+.btn-primary:hover {
+  background: var(--accent);
+  filter: brightness(1.08);
+}
+
+/* Device drawings: Live Activity now-playing bars */
+@keyframes duo-wave {
+  from {
+    transform: scaleY(0.3);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.duo-wave rect {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: duo-wave 0.55s ease-in-out infinite alternate;
+}
+.duo-wave rect:nth-child(2) {
+  animation-delay: -0.2s;
+  animation-duration: 0.45s;
+}
+.duo-wave rect:nth-child(3) {
+  animation-delay: -0.35s;
+  animation-duration: 0.6s;
+}
+.duo-wave rect:nth-child(4) {
+  animation-delay: -0.1s;
+  animation-duration: 0.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .duo-wave rect {
+    animation: none;
+  }
+  .duo-anim {
+    transition: none !important;
+  }
+}
