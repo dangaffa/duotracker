@@ -13,7 +13,7 @@ const ERRORS: Record<string, string> = {
 export function LoginForm() {
   const error = useSearchParams().get("error");
   const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "sending" | "sent" | "failed">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "failed" | "rate_limited">("idle");
 
   if (!isSupabaseConfigured) {
     return <p className="text-muted">Connect Supabase in .env.local to enable admin sign-in.</p>;
@@ -33,7 +33,9 @@ export function LoginForm() {
     // An unknown email is refused with "signups not allowed". Show the same message as a
     // success so the form doesn't reveal which emails have accounts.
     const unknownEmail = error && (error.status === 422 || /signup/i.test(error.message));
-    setState(error && !unknownEmail ? "failed" : "sent");
+    // Supabase's built-in mail sender only allows a few emails an hour per project.
+    if (error?.status === 429) setState("rate_limited");
+    else setState(error && !unknownEmail ? "failed" : "sent");
   }
 
   if (state === "sent") {
@@ -60,6 +62,12 @@ export function LoginForm() {
         {state === "sending" ? "Sending…" : "Email me a sign-in link"}
       </button>
       {state === "failed" && <p className="text-sm text-[var(--status-unoptimized)]">Couldn&apos;t send the link. Try again.</p>}
+      {state === "rate_limited" && (
+        <p className="text-sm text-[var(--status-unoptimized)]">
+          Too many sign-in emails have been sent recently. Wait a while (up to an hour) and try again, or use the last
+          link you received if it hasn&apos;t expired.
+        </p>
+      )}
     </form>
   );
 }
