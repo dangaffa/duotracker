@@ -232,3 +232,29 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect("/admin/login");
 }
+
+/* -------------------------------- Account ------------------------------- */
+
+const MIN_PASSWORD = 12;
+
+/** Sets (or changes) the signed-in admin's password, for signing in without an email link. */
+export async function setPassword(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
+  const { supabase } = await requireAdmin();
+  const password = String(formData.get("password") ?? "");
+  if (password.length < MIN_PASSWORD) {
+    return { ok: false, message: `Use at least ${MIN_PASSWORD} characters.` };
+  }
+  if (password !== String(formData.get("confirm") ?? "")) {
+    return { ok: false, message: "The two passwords don't match." };
+  }
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    if (error.code === "reauthentication_needed") {
+      return { ok: false, message: "For security, sign in again with an email link, then set the password straight away." };
+    }
+    if (error.code === "same_password") return { ok: true, message: "That's already your password." };
+    if (error.code === "weak_password") return { ok: false, message: "That password is too easy to guess. Try a longer one." };
+    return { ok: false, message: error.message };
+  }
+  return { ok: true, message: "Password saved. You can now sign in with it." };
+}

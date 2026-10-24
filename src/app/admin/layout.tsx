@@ -10,6 +10,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
         <span className="rounded bg-accent px-1.5 py-0.5 text-xs text-accent-fg">ADMIN</span>
         <Link href="/admin" className="text-muted hover:text-foreground">Review queue</Link>
         <Link href="/admin/apps" className="text-muted hover:text-foreground">Apps</Link>
+        <Link href="/admin/account" className="ml-auto text-muted hover:text-foreground">Account</Link>
       </nav>
       {children}
     </div>
