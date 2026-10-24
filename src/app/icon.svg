@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Same mark as the header logo: an open Duo, left half filled. Follows the browser's light/dark theme. -->
+  <style>
+    .edge { stroke: #14171c; }
+    .half { fill: #3f5bd8; }
+    @media (prefers-color-scheme: dark) {
+      .edge { stroke: #e8ebf0; }
+      .half { fill: #7d93ff; }
+    }
+  </style>
+  <clipPath id="screen"><rect x="1.5" y="5.5" width="29" height="21" rx="5" /></clipPath>
+  <rect class="half" x="1.5" y="5.5" width="14.5" height="21" clip-path="url(#screen)" />
+  <line class="edge" x1="16" y1="6" x2="16" y2="26" stroke-width="1.2" stroke-opacity=".45" />
+  <rect class="edge" x="1.5" y="5.5" width="29" height="21" rx="5" fill="none" stroke-width="2.8" />
+</svg>

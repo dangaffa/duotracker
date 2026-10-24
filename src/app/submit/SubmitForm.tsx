@@ -79,13 +79,6 @@ export function SubmitForm({ apps }: { apps: AppOption[] }) {
         </label>
       ) : (
         <>
-          <StoreLinkField
-            hint="Paste the app's App Store link and we'll fill in the rest."
-            onFound={(app) => {
-              setName((n) => n || app.name);
-              setDeveloper((d) => d || app.developer);
-            }}
-          />
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block space-y-1.5">
               <span className="text-sm font-semibold">App name</span>
@@ -154,6 +147,17 @@ export function SubmitForm({ apps }: { apps: AppOption[] }) {
           className="field"
         />
       </label>
+
+      {kind === "new_app" && (
+        <StoreLinkField
+          label="App Store link (optional)"
+          hint="Helps us find the right app and its icon. Anything you've left blank above gets filled in from it."
+          onFound={(app) => {
+            setName((n) => n || app.name);
+            setDeveloper((d) => d || app.developer);
+          }}
+        />
+      )}
 
       {state && !state.ok && <p className="text-sm font-medium text-[var(--status-unoptimized)]">{state.message}</p>}
 
